@@ -72,7 +72,7 @@ public @interface Arg {
 Apply this annotation to method parameters:
 ```java
 int sum(@Arg(name = "firstNumber", description = "The first number to add") int a,
-        @Arg(name = "secondNumber", description = "The second number to add", required = false) int b);
+        @Arg(name = "secondNumber", description = "The second number to add") int b);
 ```
 
 Implement corresponding mapper and pass it as an argument to `JsonSchemaGenerator`:
@@ -99,5 +99,28 @@ class MyGenerator {
         JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(MAPPERS);
         String schema = schemaGenerator.generate(method);
     }
+}
+```
+
+So, the generated schema will look like:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "firstNumber": {
+      "type": "integer",
+      "description": "The first number to add"
+    },
+    "secondNumber": {
+      "type": "integer",
+      "description": "The second number to add"
+    }
+  },
+  "required": [
+    "firstNumber",
+    "secondNumber"
+  ],
+  "additionalProperties": false
 }
 ```
