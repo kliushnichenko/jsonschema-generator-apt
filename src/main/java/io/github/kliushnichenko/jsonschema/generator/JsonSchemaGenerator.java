@@ -32,11 +32,24 @@ public class JsonSchemaGenerator {
         this.annotationsMappingProcessor = new AnnotationsMappingProcessor(mappers);
     }
 
+    /**
+     * Generates JSON schema as a string for the given method parameters.
+     */
     @SuppressWarnings("unchecked")
     public String generate(ExecutableElement method) {
         JsonSchemaObj schema = new JsonSchemaObj();
         populateSchemaFromParams(schema, (List<VariableElement>) method.getParameters());
-        return serializeSchema(schema);
+        return serializeSchemaObj(schema);
+    }
+
+    /**
+     * Generates JSON schema object for the given method parameters.
+     */
+    @SuppressWarnings("unchecked")
+    public JsonSchemaObj generateAsObject(ExecutableElement method) {
+        JsonSchemaObj schema = new JsonSchemaObj();
+        populateSchemaFromParams(schema, (List<VariableElement>) method.getParameters());
+        return schema;
     }
 
     private void populateSchemaFromParams(JsonSchemaObj schema, List<VariableElement> parameters) {
@@ -151,7 +164,7 @@ public class JsonSchemaGenerator {
                 .toList();
     }
 
-    private static String serializeSchema(JsonSchemaObj schema) {
+    public static String serializeSchemaObj(JsonSchemaObj schema) {
         try {
             return OBJECT_MAPPER.writeValueAsString(schema);
         } catch (Exception e) {
