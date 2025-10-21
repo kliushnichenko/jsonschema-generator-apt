@@ -107,7 +107,21 @@ public class JsonSchemaGenerator {
     private JsonSchemaObj buildSchemaForMap(TypeMirror paramTypeMirror, JsonSchemaProps schemaProps) {
         JsonSchemaObj mapSchema = new JsonSchemaObj();
         TypeMirror type = TypeUtils.getMapValueType(paramTypeMirror);
-        JsonSchemaBase additionalProps = buildSchemaForType(type);
+
+        Object additionalProps;
+        if ("java.lang.Object".equals(TypeUtils.getTypeName(type))) {
+            additionalProps = Map.of("oneOf", List.of(
+                    new JsonSchemaBase(JsonSchemaType.STRING),
+                    new JsonSchemaBase(JsonSchemaType.NUMBER),
+                    new JsonSchemaBase(JsonSchemaType.INTEGER),
+                    new JsonSchemaBase(JsonSchemaType.BOOLEAN),
+                    new JsonSchemaBase(JsonSchemaType.OBJECT),
+                    new JsonSchemaBase(JsonSchemaType.ARRAY),
+                    new JsonSchemaBase(JsonSchemaType.NULL)
+            ));
+        } else {
+            additionalProps = buildSchemaForType(type);
+        }
         mapSchema.setAdditionalProperties(additionalProps);
         enrichSchema(schemaProps, mapSchema);
         return mapSchema;
