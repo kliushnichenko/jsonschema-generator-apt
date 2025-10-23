@@ -35,6 +35,47 @@ public class MapTypes {
             {
               "type": "object",
               "properties": {
+                "string2ObjectMap": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "array"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "string2ObjectMap"
+              ],
+              "additionalProperties": false
+            }""")
+    void string2ObjectMap(Map<String, Object> string2ObjectMap) {
+    }
+
+    @ExpectedSchema("""
+            {
+              "type": "object",
+              "properties": {
                 "uuid2IntMap": {
                   "type": "object",
                   "additionalProperties": {
