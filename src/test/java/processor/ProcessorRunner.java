@@ -13,11 +13,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.google.testing.compile.Compiler.javac;
 
 public class ProcessorRunner {
 
+    private static final Set<String> IGNORE_TYPES_LIST = Set.of(
+            "java.io.File"
+    );
     private final Compilation compilation;
 
     public ProcessorRunner(Class<?> adapter) {
@@ -25,7 +29,7 @@ public class ProcessorRunner {
     }
 
     public ProcessorRunner(Class<?> adapter, Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> argResolvers) {
-        MethodsProcessor processor = new MethodsProcessor(argResolvers);
+        MethodsProcessor processor = new MethodsProcessor(argResolvers, IGNORE_TYPES_LIST);
 
         List<JavaFileObject> sources = List.of(getSource(adapter));
         this.compilation = javac()

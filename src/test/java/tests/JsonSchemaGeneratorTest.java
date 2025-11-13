@@ -1,10 +1,7 @@
 package tests;
 
 import annotation.Arg;
-import data.CollectionTypes;
-import data.CustomTypes;
-import data.MapTypes;
-import data.ScalarBuiltInTypes;
+import data.*;
 import io.github.kliushnichenko.jsonschema.generator.JsonSchemaGenerator;
 import io.github.kliushnichenko.jsonschema.model.JsonSchemaProps;
 import io.github.kliushnichenko.jsonschema.model.JsonSchemaAnnotationMapper;
@@ -50,5 +47,10 @@ class JsonSchemaGeneratorTest {
     @Test
     void verifyMapTypesGeneration() {
         new ProcessorRunner(MapTypes.class, MAPPERS);
+    }
+
+    @Test
+    void verifyIgnoreTypesAreSkipped() {
+        new ProcessorRunner(IgnoreTypes.class, MAPPERS);
     }
 }

@@ -12,10 +12,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Main class for generating JSON schema from method parameters.
@@ -27,9 +24,20 @@ public class JsonSchemaGenerator {
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     private AnnotationsMappingProcessor annotationsMappingProcessor = new AnnotationsMappingProcessor(Map.of());
+    private Set<String> ignoreTypes = Set.of();
 
     public JsonSchemaGenerator(Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> mappers) {
         this.annotationsMappingProcessor = new AnnotationsMappingProcessor(mappers);
+    }
+
+    public JsonSchemaGenerator(Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> mappers,
+                               Set<String> ignoreTypes) {
+        this.annotationsMappingProcessor = new AnnotationsMappingProcessor(mappers);
+        this.ignoreTypes = ignoreTypes;
+    }
+
+    public JsonSchemaGenerator(Set<String> ignoreTypes) {
+        this.ignoreTypes = ignoreTypes;
     }
 
     /**
@@ -38,7 +46,8 @@ public class JsonSchemaGenerator {
     @SuppressWarnings("unchecked")
     public String generate(ExecutableElement method) {
         JsonSchemaObj schema = new JsonSchemaObj();
-        populateSchemaFromParams(schema, (List<VariableElement>) method.getParameters());
+        var parameters = filterOutIgnoredTypes((List<VariableElement>) method.getParameters());
+        populateSchemaFromParams(schema, parameters);
         return serializeSchemaObj(schema);
     }
 
@@ -48,8 +57,15 @@ public class JsonSchemaGenerator {
     @SuppressWarnings("unchecked")
     public JsonSchemaObj generateAsObject(ExecutableElement method) {
         JsonSchemaObj schema = new JsonSchemaObj();
-        populateSchemaFromParams(schema, (List<VariableElement>) method.getParameters());
+        var parameters = filterOutIgnoredTypes((List<VariableElement>) method.getParameters());
+        populateSchemaFromParams(schema, parameters);
         return schema;
+    }
+
+    private List<VariableElement> filterOutIgnoredTypes(List<VariableElement> parameters) {
+        return parameters.stream()
+                .filter(param -> !ignoreTypes.contains(TypeUtils.getTypeName(param.asType())))
+                .toList();
     }
 
     private void populateSchemaFromParams(JsonSchemaObj schema, List<VariableElement> parameters) {
