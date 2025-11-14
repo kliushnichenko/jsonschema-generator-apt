@@ -125,7 +125,7 @@ So, the generated schema will look like:
 }
 ```
 
-## Ignore Types
+## Ignore arguments by type
 
 You can configure the `JsonSchemaGenerator` to ignore specific arguments by type during schema generation. 
 For example, if you want to ignore parameters of type `HttpServletRequest`, 
@@ -137,6 +137,6 @@ you can do so by passing a set of types to ignore when creating the generator:
 
 Set<String> typesToIgnore = Set.of("javax.servlet.http.HttpServletRequest");
 
-JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator(mappers, typesToIgnore);
-String schema = schemaGenerator.generate(method);
+JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator();
+String schema = schemaGenerator.generate(method, typesToIgnore);
 ```

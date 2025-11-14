@@ -54,8 +54,8 @@ public class MethodsProcessor extends AbstractProcessor {
 
         for (Element method : methods) {
             String expectedJsonSchema = method.getAnnotation(ExpectedSchema.class).value();
-            String generatedJsonSchema = new JsonSchemaGenerator(mappers, ignoreTypes)
-                    .generate((ExecutableElement) method);
+            String generatedJsonSchema = new JsonSchemaGenerator(mappers)
+                    .generate((ExecutableElement) method, ignoreTypes);
             try {
                 JsonNode generatedJson = objectMapper.readTree(generatedJsonSchema);
                 generatedJsonSchema = objectMapper.setDefaultPrettyPrinter(new CanonicalPrettyPrinter())
