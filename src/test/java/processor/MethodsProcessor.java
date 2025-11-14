@@ -14,6 +14,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,11 +25,15 @@ public class MethodsProcessor extends AbstractProcessor {
     private Messager messager;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> mappers = Map.of();
+    private Set<String> ignoreTypes = Set.of();
 
-    public MethodsProcessor() {}
+    public MethodsProcessor() {
+    }
 
-    public MethodsProcessor(Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> mappers) {
+    public MethodsProcessor(Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> mappers,
+                            Set<String> ignoreTypes) {
         this.mappers = mappers;
+        this.ignoreTypes = ignoreTypes;
     }
 
     @Override
@@ -49,7 +54,8 @@ public class MethodsProcessor extends AbstractProcessor {
 
         for (Element method : methods) {
             String expectedJsonSchema = method.getAnnotation(ExpectedSchema.class).value();
-            String generatedJsonSchema = new JsonSchemaGenerator(mappers).generate((ExecutableElement) method);
+            String generatedJsonSchema = new JsonSchemaGenerator(mappers)
+                    .generate((ExecutableElement) method, ignoreTypes);
             try {
                 JsonNode generatedJson = objectMapper.readTree(generatedJsonSchema);
                 generatedJsonSchema = objectMapper.setDefaultPrettyPrinter(new CanonicalPrettyPrinter())
@@ -61,10 +67,10 @@ public class MethodsProcessor extends AbstractProcessor {
                             """
                                     Generated Schema doesn't match expected Schema.
                                     Method name: %s
-                                    
+                                                                        
                                     ====== Expected:
                                     %s
-                                    
+                                                                        
                                     ====== Generated:
                                     %s
                                     """.formatted(method.getSimpleName(), expectedJsonSchema, generatedJsonSchema)
