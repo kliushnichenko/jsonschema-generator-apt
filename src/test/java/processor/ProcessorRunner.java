@@ -5,6 +5,7 @@ import com.google.testing.compile.CompilationSubject;
 import com.google.testing.compile.JavaFileObjects;
 import io.github.kliushnichenko.jsonschema.model.JsonSchemaAnnotationMapper;
 
+import javax.annotation.processing.AbstractProcessor;
 import javax.tools.JavaFileObject;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,11 @@ import static com.google.testing.compile.Compiler.javac;
 
 public class ProcessorRunner {
 
+    public enum Type {
+        METHOD,
+        TYPE_MIRROR,
+    }
+
     private static final Set<String> IGNORE_TYPES_LIST = Set.of(
             "java.io.File"
     );
@@ -28,8 +34,24 @@ public class ProcessorRunner {
         this(adapter, Map.of());
     }
 
-    public ProcessorRunner(Class<?> adapter, Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> argResolvers) {
-        MethodsProcessor processor = new MethodsProcessor(argResolvers, IGNORE_TYPES_LIST);
+    public ProcessorRunner(Class<?> adapter, Type type) {
+        this(adapter, Map.of(), type);
+    }
+
+    public ProcessorRunner(Class<?> adapter,
+                           Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> argResolvers) {
+        this(adapter, argResolvers, Type.METHOD);
+    }
+
+    public ProcessorRunner(Class<?> adapter, Map<Class<? extends Annotation>,
+            JsonSchemaAnnotationMapper<?>> argResolvers,
+                           Type type) {
+        AbstractProcessor processor;
+        if (type == Type.METHOD) {
+            processor = new MethodsProcessor(argResolvers, IGNORE_TYPES_LIST);
+        } else {
+            processor = new TypeMirrorProcessor();
+        }
 
         List<JavaFileObject> sources = List.of(getSource(adapter));
         this.compilation = javac()

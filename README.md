@@ -17,13 +17,21 @@ To start using the library, include it as a dependency in your Maven project:
 
 Generate JsonSchema using `JsonSchemaGenerator` class:
 
-Primary use-case for the time being is to generate schema for method arguments:
+Primary use-case for the time being is to generate schema for method arguments or type mirror:
 
 ```java
 import io.github.kliushnichenko.jsonschema.generator.JsonSchemaGenerator;
 
-JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator();
-String schema = schemaGenerator.generate(method)); // method is ExecutableElement instance
+class Demo {
+
+    JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator();
+    
+    // from `javax.lang.model.element.ExecutableElement`
+    String schema = schemaGenerator.generate(method); // method is ExecutableElement instance
+    
+    // from `javax.lang.model.type.TypeMirror`
+    String schema = schemaGenerator.generate(type); // type is TypeMirror instance
+}
 ```
 
 For example, for the method declaration like:

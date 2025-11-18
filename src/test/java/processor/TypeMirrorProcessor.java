@@ -1,38 +1,28 @@
 package processor;
 
-import annotation.ExpectedSchema;
+import annotation.ExpectedSchemaForTypeMirror;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.kliushnichenko.jsonschema.generator.JsonSchemaGenerator;
-import io.github.kliushnichenko.jsonschema.model.JsonSchemaAnnotationMapper;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.MirroredTypeException;
+import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
-import java.lang.annotation.Annotation;
-import java.util.Map;
 import java.util.Set;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_17)
-@SupportedAnnotationTypes("annotation.ExpectedSchema")
-public class MethodsProcessor extends AbstractProcessor {
+@SupportedAnnotationTypes("annotation.ExpectedSchemaForTypeMirror")
+public class TypeMirrorProcessor extends AbstractProcessor {
 
     private Messager messager;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> mappers = Map.of();
-    private Set<String> ignoreTypes = Set.of();
 
-    public MethodsProcessor() {
-    }
-
-    public MethodsProcessor(Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> mappers,
-                            Set<String> ignoreTypes) {
-        this.mappers = mappers;
-        this.ignoreTypes = ignoreTypes;
+    public TypeMirrorProcessor() {
     }
 
     @Override
@@ -47,14 +37,22 @@ public class MethodsProcessor extends AbstractProcessor {
             return false;
         }
 
-        Set<? extends Element> methods = roundEnv.getElementsAnnotatedWith(ExpectedSchema.class);
+        Set<? extends Element> methods = roundEnv.getElementsAnnotatedWith(ExpectedSchemaForTypeMirror.class);
 
         messager.printMessage(Diagnostic.Kind.WARNING, "Processing " + methods.size() + " methods");
 
         for (Element method : methods) {
-            String expectedJsonSchema = method.getAnnotation(ExpectedSchema.class).value();
-            String generatedJsonSchema = new JsonSchemaGenerator(mappers)
-                    .generate((ExecutableElement) method, ignoreTypes);
+            var annotation = method.getAnnotation(ExpectedSchemaForTypeMirror.class);
+            String expectedJsonSchema = annotation.value();
+            TypeMirror typeMirror = null;
+            try {
+                processingEnv.getElementUtils()
+                        .getTypeElement(annotation.type().getCanonicalName()).asType();
+            } catch (MirroredTypeException mte) {
+                typeMirror = mte.getTypeMirror();
+            }
+            String generatedJsonSchema = new JsonSchemaGenerator()
+                    .generate(typeMirror);
             try {
                 JsonNode generatedJson = objectMapper.readTree(generatedJsonSchema);
                 generatedJsonSchema = objectMapper.setDefaultPrettyPrinter(new CanonicalPrettyPrinter())

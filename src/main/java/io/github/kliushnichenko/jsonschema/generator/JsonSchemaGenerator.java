@@ -31,14 +31,31 @@ public class JsonSchemaGenerator {
 
     /**
      * Generates JSON schema as a string for the given method parameters.
+     *
+     * @param method Method element to generate schema for
      */
     public String generate(ExecutableElement method) {
         return generate(method, Set.of());
     }
 
     /**
+     * Generates JSON schema as a string for the given type.
+     *
+     * @param typeMirror Type mirror to generate schema for
+     * @return JSON schema as a string, or null if the type is not a custom object type
+     */
+    public String generate(TypeMirror typeMirror) {
+        if (TypeUtils.isCustomObjectType(typeMirror)) {
+            JsonSchemaObj schemaObj = buildSchemaForCustomObject(typeMirror, new JsonSchemaProps());
+            return serializeSchemaObj(schemaObj);
+        }
+        return null;
+    }
+
+    /**
      * Generates JSON schema as a string for the given method parameters.
-     * @param method Method element to generate schema for
+     *
+     * @param method      Method element to generate schema for
      * @param ignoreTypes Set of fully qualified type names to ignore during schema generation
      */
     @SuppressWarnings("unchecked")
@@ -55,7 +72,8 @@ public class JsonSchemaGenerator {
 
     /**
      * Generates JSON schema object for the given method parameters.
-     * @param method Method element to generate schema for
+     *
+     * @param method      Method element to generate schema for
      * @param ignoreTypes Set of fully qualified type names to ignore during schema generation
      */
     @SuppressWarnings("unchecked")
@@ -94,7 +112,7 @@ public class JsonSchemaGenerator {
         } else if (TypeUtils.isMapType(paramTypeMirror)) {
             properties.put(propName, buildSchemaForMap(paramTypeMirror, schemaProps));
         } else if (TypeUtils.isCustomObjectType(paramTypeMirror)) {
-            properties.put(propName, buildSchemaForCustomObject(parameter, schemaProps));
+            properties.put(propName, buildSchemaForCustomObject(parameter.asType(), schemaProps));
         } else {
             properties.put(propName, buildSchemaForScalarType(paramTypeMirror, schemaProps));
         }
@@ -116,9 +134,9 @@ public class JsonSchemaGenerator {
         return scalarTypeSchema;
     }
 
-    private JsonSchemaObj buildSchemaForCustomObject(VariableElement parameter, JsonSchemaProps schemaProps) {
+    private JsonSchemaObj buildSchemaForCustomObject(TypeMirror typeMirror, JsonSchemaProps schemaProps) {
         JsonSchemaObj objectSchema = new JsonSchemaObj();
-        List<VariableElement> fields = resolveObjectFields(parameter.asType());
+        List<VariableElement> fields = resolveObjectFields(typeMirror);
         populateSchemaFromParams(objectSchema, fields);
         enrichSchema(schemaProps, objectSchema);
         return objectSchema;

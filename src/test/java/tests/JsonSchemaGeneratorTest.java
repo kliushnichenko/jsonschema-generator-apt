@@ -2,9 +2,8 @@ package tests;
 
 import annotation.Arg;
 import data.*;
-import io.github.kliushnichenko.jsonschema.generator.JsonSchemaGenerator;
-import io.github.kliushnichenko.jsonschema.model.JsonSchemaProps;
 import io.github.kliushnichenko.jsonschema.model.JsonSchemaAnnotationMapper;
+import io.github.kliushnichenko.jsonschema.model.JsonSchemaProps;
 import org.junit.jupiter.api.Test;
 import processor.ProcessorRunner;
 
@@ -17,12 +16,12 @@ import java.util.Map;
 class JsonSchemaGeneratorTest {
 
     private static final JsonSchemaAnnotationMapper<Arg> ARG_MAPPER = (Arg annotation) -> {
-            JsonSchemaProps schemaProps = new JsonSchemaProps();
-            schemaProps.setName(annotation.name());
-            schemaProps.setDescription(annotation.description());
-            schemaProps.setRequired(annotation.required());
-            schemaProps.setDefaultValue(annotation.defaultValue());
-            return schemaProps;
+        JsonSchemaProps schemaProps = new JsonSchemaProps();
+        schemaProps.setName(annotation.name());
+        schemaProps.setDescription(annotation.description());
+        schemaProps.setRequired(annotation.required());
+        schemaProps.setDefaultValue(annotation.defaultValue());
+        return schemaProps;
     };
 
     private static final Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> MAPPERS = Map.of(
@@ -52,5 +51,10 @@ class JsonSchemaGeneratorTest {
     @Test
     void verifyIgnoreTypesAreSkipped() {
         new ProcessorRunner(IgnoreTypes.class, MAPPERS);
+    }
+
+    @Test
+    void generate_byTypeMirror() {
+        new ProcessorRunner(TypeMirrorDataSet.class, ProcessorRunner.Type.TYPE_MIRROR);
     }
 }
