@@ -28,6 +28,9 @@ public class TypeMirrorDataSet {
                     "name"
                   ],
                   "additionalProperties": false
+                },
+                "weight": {
+                  "type": "number"
                 }
               },
               "required": [

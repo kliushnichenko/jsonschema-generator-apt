@@ -1,7 +1,8 @@
 package io.github.kliushnichenko.jsonschema.generator;
 
-import io.github.kliushnichenko.jsonschema.model.JsonSchemaProps;
 import io.github.kliushnichenko.jsonschema.model.JsonSchemaAnnotationMapper;
+import io.github.kliushnichenko.jsonschema.model.JsonSchemaProps;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.VariableElement;
@@ -33,7 +34,11 @@ class AnnotationsMappingProcessor {
 
         JsonSchemaProps schemaProps = new JsonSchemaProps();
         schemaProps.setName(paramName);
-        schemaProps.setRequired(true);
+
+        Schema swaggerAnnotation = parameter.getAnnotation(Schema.class);
+        boolean isRequired = isFieldRequired(swaggerAnnotation);
+        schemaProps.setRequired(isRequired);
+
 
         for (AnnotationMirror annotationMirror : parameter.getAnnotationMirrors()) {
             DeclaredType annotationType = annotationMirror.getAnnotationType();
@@ -55,5 +60,13 @@ class AnnotationsMappingProcessor {
         }
 
         return schemaProps;
+    }
+
+    private boolean isFieldRequired(Schema swaggerAnnotation) {
+        if (swaggerAnnotation != null && swaggerAnnotation.requiredMode() == Schema.RequiredMode.NOT_REQUIRED) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

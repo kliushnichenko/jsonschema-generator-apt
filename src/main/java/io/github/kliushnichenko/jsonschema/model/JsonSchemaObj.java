@@ -1,5 +1,6 @@
 package io.github.kliushnichenko.jsonschema.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.Map;
 public class JsonSchemaObj extends JsonSchemaBase {
 
     private Map<String, Object> properties;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<String> required;
     private Object additionalProperties = false;
     @JsonProperty("$defs")

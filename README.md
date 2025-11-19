@@ -148,3 +148,17 @@ Set<String> typesToIgnore = Set.of("javax.servlet.http.HttpServletRequest");
 JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator();
 String schema = schemaGenerator.generate(method, typesToIgnore);
 ```
+
+
+## How to mark field as not required?
+
+By default, schema generator marks all class fields as required. To mark field as not required, you can use `@Schema` annotation from `io.swagger.v3.oas.annotations.media` package:
+
+```java
+import io.swagger.v3.oas.annotations.media.Schema;
+
+class User {
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String middleName;
+}
+```

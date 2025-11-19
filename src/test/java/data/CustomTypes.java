@@ -31,6 +31,9 @@ public class CustomTypes {
                         "name"
                       ],
                       "additionalProperties": false
+                    },
+                    "weight": {
+                      "type": "number"
                     }
                   },
                   "required": [
@@ -73,6 +76,9 @@ public class CustomTypes {
                         "name"
                       ],
                       "additionalProperties": false
+                    },
+                    "weight": {
+                      "type": "number"
                     }
                   },
                   "required": [
@@ -119,6 +125,9 @@ public class CustomTypes {
                         "name"
                       ],
                       "additionalProperties": false
+                    },
+                    "weight": {
+                      "type": "number"
                     }
                   },
                   "required": [

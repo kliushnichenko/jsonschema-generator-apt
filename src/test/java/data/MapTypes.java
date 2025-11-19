@@ -117,6 +117,9 @@ public class MapTypes {
                           "name"
                         ],
                         "additionalProperties": false
+                      },
+                      "weight": {
+                        "type": "number"
                       }
                     },
                     "required": [

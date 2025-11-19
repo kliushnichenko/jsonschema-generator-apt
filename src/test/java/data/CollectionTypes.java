@@ -72,6 +72,9 @@ public class CollectionTypes {
                           "name"
                         ],
                         "additionalProperties": false
+                      },
+                      "weight": {
+                        "type": "number"
                       }
                     },
                     "required": [
