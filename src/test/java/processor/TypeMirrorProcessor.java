@@ -1,5 +1,6 @@
 package processor;
 
+import annotation.Container;
 import annotation.ExpectedSchemaForTypeMirror;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -44,12 +45,13 @@ public class TypeMirrorProcessor extends AbstractProcessor {
         for (Element method : methods) {
             var annotation = method.getAnnotation(ExpectedSchemaForTypeMirror.class);
             String expectedJsonSchema = annotation.value();
+            Container container = annotation.container();
             TypeMirror typeMirror = null;
             try {
                 processingEnv.getElementUtils()
                         .getTypeElement(annotation.type().getCanonicalName()).asType();
             } catch (MirroredTypeException mte) {
-                typeMirror = mte.getTypeMirror();
+                typeMirror = resolveTypeMirror(mte, container);
             }
             String generatedJsonSchema = new JsonSchemaGenerator()
                     .generate(typeMirror);
@@ -79,5 +81,29 @@ public class TypeMirrorProcessor extends AbstractProcessor {
         }
 
         return true;
+    }
+
+    private TypeMirror resolveTypeMirror(MirroredTypeException mte, Container container) {
+        TypeMirror typeMirror;
+        if (Container.LIST == container) {
+            typeMirror = processingEnv.getTypeUtils()
+                    .getDeclaredType(
+                            processingEnv.getElementUtils().getTypeElement("java.util.List"),
+                            mte.getTypeMirror()
+                    );
+        } else if (Container.MAP == container) {
+            var strTypeMirror = processingEnv.getElementUtils()
+                    .getTypeElement("java.lang.String")
+                    .asType();
+            typeMirror = processingEnv.getTypeUtils()
+                    .getDeclaredType(
+                            processingEnv.getElementUtils().getTypeElement("java.util.Map"),
+                            strTypeMirror,
+                            mte.getTypeMirror()
+                    );
+        } else {
+            typeMirror = mte.getTypeMirror();
+        }
+        return typeMirror;
     }
 }
