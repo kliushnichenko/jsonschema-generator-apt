@@ -10,4 +10,5 @@ import java.lang.annotation.Target;
 public @interface ExpectedSchemaForTypeMirror {
     String value();
     Class<?> type();
+    Container container() default Container.NONE;
 }

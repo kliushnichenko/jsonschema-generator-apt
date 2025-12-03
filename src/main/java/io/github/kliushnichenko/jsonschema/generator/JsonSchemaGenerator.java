@@ -45,11 +45,18 @@ public class JsonSchemaGenerator {
      * @return JSON schema as a string, or null if the type is not a custom object type
      */
     public String generate(TypeMirror typeMirror) {
-        if (TypeUtils.isCustomObjectType(typeMirror)) {
-            JsonSchemaObj schemaObj = buildSchemaForCustomObject(typeMirror, new JsonSchemaProps());
-            return serializeSchemaObj(schemaObj);
+        JsonSchemaBase schema;
+        var props = new JsonSchemaProps();
+        if (TypeUtils.isIterableType(typeMirror)) {
+            schema = buildSchemaForIterable(typeMirror, props);
+        } else if (TypeUtils.isMapType(typeMirror)) {
+            schema = buildSchemaForMap(typeMirror, props);
+        } else if (TypeUtils.isCustomObjectType(typeMirror)) {
+            schema = buildSchemaForCustomObject(typeMirror, props);
+        } else {
+            return null;
         }
-        return null;
+        return serializeSchema(schema);
     }
 
     /**
@@ -216,11 +223,15 @@ public class JsonSchemaGenerator {
                 .toList();
     }
 
-    public static String serializeSchemaObj(JsonSchemaObj schema) {
+    private static String serializeSchema(JsonSchemaBase schema) {
         try {
             return OBJECT_MAPPER.writeValueAsString(schema);
         } catch (Exception e) {
             throw new JsonSchemaSerializationException("Failed to serialize JSON schema", e);
         }
+    }
+
+    public static String serializeSchemaObj(JsonSchemaObj schema) {
+        return serializeSchema(schema);
     }
 }
