@@ -34,11 +34,10 @@ class AnnotationsMappingProcessor {
 
         JsonSchemaProps schemaProps = new JsonSchemaProps();
         schemaProps.setName(paramName);
+        schemaProps.setRequired(true); // by default, parameters are required
 
         Schema swaggerAnnotation = parameter.getAnnotation(Schema.class);
-        boolean isRequired = isFieldRequired(swaggerAnnotation);
-        schemaProps.setRequired(isRequired);
-
+        applySwaggerProperties(swaggerAnnotation, schemaProps);
 
         for (AnnotationMirror annotationMirror : parameter.getAnnotationMirrors()) {
             DeclaredType annotationType = annotationMirror.getAnnotationType();
@@ -62,11 +61,14 @@ class AnnotationsMappingProcessor {
         return schemaProps;
     }
 
-    private boolean isFieldRequired(Schema swaggerAnnotation) {
-        if (swaggerAnnotation != null && swaggerAnnotation.requiredMode() == Schema.RequiredMode.NOT_REQUIRED) {
-            return false;
-        } else {
-            return true;
+    private void applySwaggerProperties(Schema swaggerAnnotation, JsonSchemaProps props) {
+        if (swaggerAnnotation != null) {
+            boolean isRequired = swaggerAnnotation.requiredMode() != Schema.RequiredMode.NOT_REQUIRED;
+            props.setRequired(isRequired);
+
+            if (!swaggerAnnotation.description().isBlank()) {
+                props.setDescription(swaggerAnnotation.description());
+            }
         }
     }
 }

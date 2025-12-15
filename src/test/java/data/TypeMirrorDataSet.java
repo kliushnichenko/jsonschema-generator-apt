@@ -31,7 +31,8 @@ public class TypeMirrorDataSet {
                   "additionalProperties": false
                 },
                 "weight": {
-                  "type": "number"
+                  "type": "number",
+                  "description": "Weight of the pet in kilograms"
                 }
               },
               "required": [
@@ -71,7 +72,8 @@ public class TypeMirrorDataSet {
                     "additionalProperties": false
                   },
                   "weight": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Weight of the pet in kilograms"
                   }
                 },
                 "required": [
@@ -113,7 +115,8 @@ public class TypeMirrorDataSet {
                     "additionalProperties": false
                   },
                   "weight": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Weight of the pet in kilograms"
                   }
                 },
                 "required": [

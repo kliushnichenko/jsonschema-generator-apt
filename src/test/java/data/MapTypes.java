@@ -119,7 +119,8 @@ public class MapTypes {
                         "additionalProperties": false
                       },
                       "weight": {
-                        "type": "number"
+                        "type": "number",
+                        "description": "Weight of the pet in kilograms"
                       }
                     },
                     "required": [

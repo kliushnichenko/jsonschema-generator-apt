@@ -10,7 +10,7 @@ public class Pet {
     private String name;
     private int age;
     private Person owner;
-    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Weight of the pet in kilograms")
     private double weight;
 }
 
