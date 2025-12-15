@@ -165,4 +165,4 @@ class User {
 
 ## How to add `description` to field?
 
-You can use `@Schema(description="<description>)` annotation from `io.swagger.v3.oas.annotations.media` package to add description to field.
+You can use `@Schema(description="<description>")` annotation from `io.swagger.v3.oas.annotations.media` package to add description to field.
