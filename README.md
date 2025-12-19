@@ -149,8 +149,9 @@ JsonSchemaGenerator schemaGenerator = new JsonSchemaGenerator();
 String schema = schemaGenerator.generate(method, typesToIgnore);
 ```
 
+## How to enrich schema with OpenAPI annotations?
 
-## How to mark field as not required?
+### How to mark field as not required?
 
 By default, schema generator marks all class fields as required. To mark field as not required, you can use `@Schema` annotation from `io.swagger.v3.oas.annotations.media` package:
 
@@ -163,6 +164,11 @@ class User {
 }
 ```
 
-## How to add `description` to field?
+### How to add `description` to field?
 
 You can use `@Schema(description="<description>")` annotation from `io.swagger.v3.oas.annotations.media` package to add description to field.
+
+### Will Jackson annotations be processed?
+
+Partially, you can use:  
+- `@JsonProperty("field-name:)` - to change property name in the schema
