@@ -132,4 +132,31 @@ public class TypeMirrorDataSet {
     )
     public void petsMapType() {
     }
+
+    @ExpectedSchemaForTypeMirror(value = """
+            {
+              "type": "object",
+              "properties": {
+                "first-name": {
+                  "type": "string"
+                },
+                "last-name": {
+                  "type": "string",
+                  "description": "User's last name"
+                },
+                "email": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "first-name",
+                "last-name",
+                "email"
+              ],
+              "additionalProperties": false
+            }""",
+            type = User.class
+    )
+    public void userWithJacksonAnnotation() {
+    }
 }

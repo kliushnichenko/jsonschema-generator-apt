@@ -161,4 +161,38 @@ public class CustomTypes {
             }""")
     void twoCustomTypesPetAndPerson(Pet pet, Person owner) {
     }
+
+    @ExpectedSchema("""
+            {
+              "type": "object",
+              "properties": {
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "first-name": {
+                      "type": "string"
+                    },
+                    "last-name": {
+                      "type": "string",
+                      "description": "User's last name"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "first-name",
+                    "last-name",
+                    "email"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "user"
+              ],
+              "additionalProperties": false
+            }""")
+    void userWithJsonPropertyAnnotations(User user) {
+    }
 }

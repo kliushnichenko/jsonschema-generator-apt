@@ -1,5 +1,6 @@
 package io.github.kliushnichenko.jsonschema.generator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.kliushnichenko.jsonschema.model.JsonSchemaAnnotationMapper;
 import io.github.kliushnichenko.jsonschema.model.JsonSchemaProps;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,6 +40,9 @@ class AnnotationsMappingProcessor {
         Schema swaggerAnnotation = parameter.getAnnotation(Schema.class);
         applySwaggerProperties(swaggerAnnotation, schemaProps);
 
+        JsonProperty jacksonProperty = parameter.getAnnotation(JsonProperty.class);
+        applyJacksonAnnotation(jacksonProperty, schemaProps);
+
         for (AnnotationMirror annotationMirror : parameter.getAnnotationMirrors()) {
             DeclaredType annotationType = annotationMirror.getAnnotationType();
             String annotationClassName = annotationType.toString();
@@ -68,6 +72,16 @@ class AnnotationsMappingProcessor {
 
             if (!swaggerAnnotation.description().isBlank()) {
                 props.setDescription(swaggerAnnotation.description());
+            }
+        }
+    }
+
+    private void applyJacksonAnnotation(JsonProperty ann, JsonSchemaProps props) {
+        if (ann != null) {
+            String fieldName = ann.value();
+
+            if (!fieldName.isBlank()) {
+                props.setName(fieldName);
             }
         }
     }
