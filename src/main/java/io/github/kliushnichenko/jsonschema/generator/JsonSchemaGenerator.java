@@ -3,6 +3,7 @@ package io.github.kliushnichenko.jsonschema.generator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.kliushnichenko.jsonschema.model.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.NoArgsConstructor;
 
 import javax.lang.model.element.ElementKind;
@@ -143,6 +144,15 @@ public class JsonSchemaGenerator {
 
     private JsonSchemaObj buildSchemaForCustomObject(TypeMirror typeMirror, JsonSchemaProps schemaProps) {
         JsonSchemaObj objectSchema = new JsonSchemaObj();
+
+        TypeElement elem = toElement(typeMirror);
+        Schema classLevelschema = elem.getAnnotation(Schema.class);
+        if (classLevelschema != null) {
+            if (isPresent(classLevelschema.description())) {
+                objectSchema.setDescription(classLevelschema.description());
+            }
+        }
+
         List<VariableElement> fields = resolveObjectFields(typeMirror);
         populateSchemaFromParams(objectSchema, fields);
         enrichSchema(schemaProps, objectSchema);
@@ -216,7 +226,7 @@ public class JsonSchemaGenerator {
 
     @SuppressWarnings("unchecked")
     private List<VariableElement> resolveObjectFields(TypeMirror typeMirror) {
-        TypeElement typeElement = (TypeElement) ((DeclaredType) typeMirror).asElement();
+        TypeElement typeElement = toElement(typeMirror);
         return (List<VariableElement>) typeElement.getEnclosedElements()
                 .stream()
                 .filter(e -> e.getKind() == ElementKind.FIELD)
@@ -229,6 +239,10 @@ public class JsonSchemaGenerator {
         } catch (Exception e) {
             throw new JsonSchemaSerializationException("Failed to serialize JSON schema", e);
         }
+    }
+
+    private TypeElement toElement(TypeMirror typeMirror) {
+        return (TypeElement) ((DeclaredType) typeMirror).asElement();
     }
 
     public static String serializeSchemaObj(JsonSchemaObj schema) {

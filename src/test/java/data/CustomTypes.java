@@ -22,6 +22,7 @@ public class CustomTypes {
                     },
                     "owner": {
                       "type": "object",
+                      "description": "Person details",
                       "properties": {
                         "name": {
                           "type": "string"
@@ -68,6 +69,7 @@ public class CustomTypes {
                     },
                     "owner": {
                       "type": "object",
+                      "description": "Person details",
                       "properties": {
                         "name": {
                           "type": "string"
@@ -118,6 +120,7 @@ public class CustomTypes {
                     },
                     "owner": {
                       "type": "object",
+                      "description": "Person details",
                       "properties": {
                         "name": {
                           "type": "string"
@@ -142,6 +145,7 @@ public class CustomTypes {
                 },
                 "owner": {
                   "type": "object",
+                  "description": "Person details",
                   "properties": {
                     "name": {
                       "type": "string"
@@ -168,6 +172,7 @@ public class CustomTypes {
               "properties": {
                 "user": {
                   "type": "object",
+                  "description": "User data container",
                   "properties": {
                     "first-name": {
                       "type": "string"

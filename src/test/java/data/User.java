@@ -3,6 +3,7 @@ package data;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "User data container")
 public record User(
         @JsonProperty("first-name")
         String firstName,

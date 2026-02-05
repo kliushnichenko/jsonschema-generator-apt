@@ -20,6 +20,7 @@ public class TypeMirrorDataSet {
                 },
                 "owner": {
                   "type": "object",
+                  "description": "Person details",
                   "properties": {
                     "name": {
                       "type": "string"
@@ -61,6 +62,7 @@ public class TypeMirrorDataSet {
                   },
                   "owner": {
                     "type": "object",
+                    "description": "Person details",
                     "properties": {
                       "name": {
                         "type": "string"
@@ -104,6 +106,7 @@ public class TypeMirrorDataSet {
                   },
                   "owner": {
                     "type": "object",
+                    "description": "Person details",
                     "properties": {
                       "name": {
                         "type": "string"
@@ -136,6 +139,7 @@ public class TypeMirrorDataSet {
     @ExpectedSchemaForTypeMirror(value = """
             {
               "type": "object",
+              "description": "User data container",
               "properties": {
                 "first-name": {
                   "type": "string"
