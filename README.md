@@ -166,9 +166,10 @@ class User {
 
 ### How to add `description` to field?
 
-You can use `@Schema(description="<description>")` annotation from `io.swagger.v3.oas.annotations.media` package to add description to field.
-
+- You can use `@Schema(description="<description>")` annotation from `io.swagger.v3.oas.annotations.media` package to add description to field.
+- The same way class-level `@Schema(description="<description>")` annotation can be used to add description to the object type
+- 
 ### Will Jackson annotations be processed?
 
 Partially, you can use:  
-- `@JsonProperty("field-name:)` - to change property name in the schema
+- `@JsonProperty("field-name")` - to change property name in the schema

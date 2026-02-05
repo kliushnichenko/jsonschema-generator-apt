@@ -63,6 +63,7 @@ public class CollectionTypes {
                       },
                       "owner": {
                         "type": "object",
+                        "description": "Person details",
                         "properties": {
                           "name": {
                             "type": "string"

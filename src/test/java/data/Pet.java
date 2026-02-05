@@ -16,6 +16,7 @@ public class Pet {
 
 @Getter
 @Setter
+@Schema(description = "Person details")
 class Person {
     private String name;
 }

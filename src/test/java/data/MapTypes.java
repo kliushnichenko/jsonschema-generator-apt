@@ -108,6 +108,7 @@ public class MapTypes {
                       },
                       "owner": {
                         "type": "object",
+                        "description": "Person details",
                         "properties": {
                           "name": {
                             "type": "string"
