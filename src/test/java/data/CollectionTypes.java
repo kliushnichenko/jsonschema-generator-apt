@@ -2,6 +2,7 @@ package data;
 
 import annotation.Arg;
 import annotation.ExpectedSchema;
+import data.model.Pet;
 import lombok.NonNull;
 
 import java.util.ArrayList;
@@ -62,7 +63,10 @@ public class CollectionTypes {
                         "type": "integer"
                       },
                       "owner": {
-                        "type": "object",
+                        "type": [
+                          "object",
+                          "null"
+                        ],
                         "description": "Person details",
                         "properties": {
                           "name": {

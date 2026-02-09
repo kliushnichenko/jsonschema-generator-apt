@@ -1,0 +1,3 @@
+- Support `enum`
+- Support `defaultValue`
+- Support minItems / maxItems

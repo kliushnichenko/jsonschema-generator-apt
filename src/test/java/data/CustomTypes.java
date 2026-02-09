@@ -2,6 +2,9 @@ package data;
 
 import annotation.Arg;
 import annotation.ExpectedSchema;
+import data.model.Person;
+import data.model.Pet;
+import data.model.User;
 import lombok.NonNull;
 
 public class CustomTypes {
@@ -21,7 +24,10 @@ public class CustomTypes {
                       "type": "integer"
                     },
                     "owner": {
-                      "type": "object",
+                      "type": [
+                        "object",
+                        "null"
+                      ],
                       "description": "Person details",
                       "properties": {
                         "name": {
@@ -68,7 +74,10 @@ public class CustomTypes {
                       "type": "integer"
                     },
                     "owner": {
-                      "type": "object",
+                      "type": [
+                        "object",
+                        "null"
+                      ],
                       "description": "Person details",
                       "properties": {
                         "name": {
@@ -119,7 +128,10 @@ public class CustomTypes {
                       "type": "integer"
                     },
                     "owner": {
-                      "type": "object",
+                      "type": [
+                        "object",
+                        "null"
+                      ],
                       "description": "Person details",
                       "properties": {
                         "name": {

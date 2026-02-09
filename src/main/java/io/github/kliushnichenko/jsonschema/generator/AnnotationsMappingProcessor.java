@@ -73,6 +73,10 @@ class AnnotationsMappingProcessor {
             if (!swaggerAnnotation.description().isBlank()) {
                 props.setDescription(swaggerAnnotation.description());
             }
+
+            if (swaggerAnnotation.nullable()) {
+                props.setNullable(true);
+            }
         }
     }
 
