@@ -2,6 +2,8 @@ package data;
 
 import annotation.Container;
 import annotation.ExpectedSchemaForTypeMirror;
+import data.model.Pet;
+import data.model.User;
 
 /**
  * @author kliushnichenko
@@ -19,7 +21,10 @@ public class TypeMirrorDataSet {
                   "type": "integer"
                 },
                 "owner": {
-                  "type": "object",
+                  "type": [
+                    "object",
+                    "null"
+                  ],
                   "description": "Person details",
                   "properties": {
                     "name": {
@@ -61,7 +66,10 @@ public class TypeMirrorDataSet {
                     "type": "integer"
                   },
                   "owner": {
-                    "type": "object",
+                    "type": [
+                      "object",
+                      "null"
+                    ],
                     "description": "Person details",
                     "properties": {
                       "name": {
@@ -105,7 +113,10 @@ public class TypeMirrorDataSet {
                     "type": "integer"
                   },
                   "owner": {
-                    "type": "object",
+                    "type": [
+                      "object",
+                      "null"
+                    ],
                     "description": "Person details",
                     "properties": {
                       "name": {

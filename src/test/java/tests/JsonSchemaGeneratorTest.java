@@ -57,4 +57,9 @@ class JsonSchemaGeneratorTest {
     void generate_byTypeMirror() {
         new ProcessorRunner(TypeMirrorDataSet.class, ProcessorRunner.Type.TYPE_MIRROR);
     }
+
+    @Test
+    void generate_NullableTypes() {
+        new ProcessorRunner(NullableTypes.class, ProcessorRunner.Type.TYPE_MIRROR);
+    }
 }

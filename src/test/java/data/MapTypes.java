@@ -2,6 +2,7 @@ package data;
 
 import annotation.Arg;
 import annotation.ExpectedSchema;
+import data.model.Pet;
 import lombok.NonNull;
 
 import java.util.Map;
@@ -37,31 +38,7 @@ public class MapTypes {
               "properties": {
                 "string2ObjectMap": {
                   "type": "object",
-                  "additionalProperties": {
-                    "oneOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "number"
-                      },
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "boolean"
-                      },
-                      {
-                        "type": "object"
-                      },
-                      {
-                        "type": "array"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
-                  }
+                  "additionalProperties": true
                 }
               },
               "required": [
@@ -107,7 +84,10 @@ public class MapTypes {
                         "type": "integer"
                       },
                       "owner": {
-                        "type": "object",
+                        "type": [
+                          "object",
+                          "null"
+                        ],
                         "description": "Person details",
                         "properties": {
                           "name": {

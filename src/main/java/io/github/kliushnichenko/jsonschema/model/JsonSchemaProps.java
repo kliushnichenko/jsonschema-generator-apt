@@ -14,4 +14,5 @@ public class JsonSchemaProps {
     private String description;
     private boolean required;
     private String defaultValue;
+    private boolean nullable;
 }

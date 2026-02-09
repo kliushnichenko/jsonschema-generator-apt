@@ -165,15 +165,7 @@ public class JsonSchemaGenerator {
 
         Object additionalProps;
         if ("java.lang.Object".equals(TypeUtils.getTypeName(type))) {
-            additionalProps = Map.of("oneOf", List.of(
-                    new JsonSchemaBase(JsonSchemaType.STRING),
-                    new JsonSchemaBase(JsonSchemaType.NUMBER),
-                    new JsonSchemaBase(JsonSchemaType.INTEGER),
-                    new JsonSchemaBase(JsonSchemaType.BOOLEAN),
-                    new JsonSchemaBase(JsonSchemaType.OBJECT),
-                    new JsonSchemaBase(JsonSchemaType.ARRAY),
-                    new JsonSchemaBase(JsonSchemaType.NULL)
-            ));
+            additionalProps = true; // allow any additional properties if value type is Object
         } else {
             additionalProps = buildSchemaForType(type);
         }
@@ -198,6 +190,10 @@ public class JsonSchemaGenerator {
 
         if (isPresent(schemaProps.getDefaultValue())) {
             schema.setDefaultValue(schemaProps.getDefaultValue());
+        }
+
+        if (schemaProps.isNullable()) {
+            schema.setNullable();
         }
     }
 
