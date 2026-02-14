@@ -77,6 +77,14 @@ class AnnotationsMappingProcessor {
             if (swaggerAnnotation.nullable()) {
                 props.setNullable(true);
             }
+
+            if (Schema.AdditionalPropertiesValue.TRUE == swaggerAnnotation.additionalProperties()) {
+                props.setAdditionalProperties(true);
+            }
+
+            if (swaggerAnnotation.types().length > 0) {
+                props.applyTypes(swaggerAnnotation.types());
+            }
         }
     }
 

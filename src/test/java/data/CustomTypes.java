@@ -2,6 +2,7 @@ package data;
 
 import annotation.Arg;
 import annotation.ExpectedSchema;
+import data.model.EntityWithEnum;
 import data.model.Person;
 import data.model.Pet;
 import data.model.User;
@@ -212,4 +213,23 @@ public class CustomTypes {
             }""")
     void userWithJsonPropertyAnnotations(User user) {
     }
+
+//    @ExpectedSchema("""
+//            {
+//              "type": "object",
+//              "properties": {
+//                "status": {
+//                  },
+//                  "required": [
+//                    "status"
+//                  ],
+//                  "additionalProperties": false
+//              },
+//              "required": [
+//                "entityWithEnum"
+//              ],
+//              "additionalProperties": false
+//            }""")
+//    void setEntityWithEnum(EntityWithEnum entityWithEnum) {
+//    }
 }

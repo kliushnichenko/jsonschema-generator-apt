@@ -146,16 +146,27 @@ public class JsonSchemaGenerator {
         JsonSchemaObj objectSchema = new JsonSchemaObj();
 
         TypeElement elem = toElement(typeMirror);
-        Schema classLevelschema = elem.getAnnotation(Schema.class);
-        if (classLevelschema != null) {
-            if (isPresent(classLevelschema.description())) {
-                objectSchema.setDescription(classLevelschema.description());
+        Schema classLevelSchema = elem.getAnnotation(Schema.class);
+        if (classLevelSchema != null) {
+            if (isPresent(classLevelSchema.description())) {
+                objectSchema.setDescription(classLevelSchema.description());
             }
         }
 
         List<VariableElement> fields = resolveObjectFields(typeMirror);
         populateSchemaFromParams(objectSchema, fields);
         enrichSchema(schemaProps, objectSchema);
+
+        if (schemaProps.isAdditionalProperties()) {
+            // override if explicitly set via annotation
+            objectSchema.setAdditionalProperties(true);
+        }
+
+        if (schemaProps.getTypes() != null) {
+            // override type if explicitly set via annotation
+            objectSchema.setType(schemaProps.getTypes());
+        }
+
         return objectSchema;
     }
 
