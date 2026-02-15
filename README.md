@@ -170,7 +170,7 @@ class User {
 - `requiredMode` - marks field as required or not required
 - `nullable` - marks field as nullable in the schema
 - `types` - allows to override the type that was generated automatically
-
+- `additionalProperties` - allows to set `additionalProperties` for the object type
 
 ### Enum support
 
