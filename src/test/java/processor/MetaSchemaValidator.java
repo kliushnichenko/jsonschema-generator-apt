@@ -22,9 +22,10 @@ class MetaSchemaValidator {
     public void validate(String generatedJsonSchema, String method, Messager messager) {
         List<Error> errors = schema.validate(generatedJsonSchema,
                 InputFormat.JSON,
-                executionContext -> {
-                    executionContext.executionConfig(executionConfig -> executionConfig.formatAssertionsEnabled(true));
-                });
+                executionContext -> executionContext.executionConfig(config -> {
+                    config.formatAssertionsEnabled(true);
+                    config.failFast(true);
+                }));
 
         if (!errors.isEmpty()) {
             messager.printMessage(Diagnostic.Kind.ERROR,

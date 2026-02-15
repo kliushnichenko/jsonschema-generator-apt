@@ -13,9 +13,12 @@ import java.util.Map;
 public class JsonSchemaObj extends JsonSchemaBase {
 
     private Map<String, Object> properties;
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<String> required;
+
     private Object additionalProperties = false;
+
     @JsonProperty("$defs")
     private Map<String, Object> defs;
 

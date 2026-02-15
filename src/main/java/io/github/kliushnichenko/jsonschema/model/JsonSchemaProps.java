@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.EnumSet;
+import java.util.List;
 
 /**
  * Represents a property within a JSON Schema.
@@ -19,6 +20,7 @@ public class JsonSchemaProps {
     private boolean nullable;
     private boolean additionalProperties;
     private EnumSet<JsonSchemaType> types;
+    private List<String> allowableValues;
 
     public void applyTypes(String[] types) {
         this.types = EnumSet.noneOf(JsonSchemaType.class);

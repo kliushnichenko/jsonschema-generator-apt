@@ -169,6 +169,12 @@ class User {
 - `description` - adds description to the field or object type
 - `requiredMode` - marks field as required or not required
 - `nullable` - marks field as nullable in the schema
+- `types` - allows to override the type that was generated automatically
+
+
+### Enum support
+
+ By default, java enum type will produce an `enum` field with values discovered from the enum constants.
 
 
 ### Will Jackson annotations be processed?

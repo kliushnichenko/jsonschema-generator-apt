@@ -9,6 +9,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -84,6 +85,10 @@ class AnnotationsMappingProcessor {
 
             if (swaggerAnnotation.types().length > 0) {
                 props.applyTypes(swaggerAnnotation.types());
+            }
+
+            if (swaggerAnnotation.allowableValues().length > 0) {
+                props.setAllowableValues(Arrays.asList(swaggerAnnotation.allowableValues()));
             }
         }
     }
