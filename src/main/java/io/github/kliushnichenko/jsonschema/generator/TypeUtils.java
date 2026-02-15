@@ -2,6 +2,7 @@ package io.github.kliushnichenko.jsonschema.generator;
 
 import lombok.experimental.UtilityClass;
 
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
@@ -105,6 +106,7 @@ public class TypeUtils {
      */
     public static boolean isCollectionType(String typeName) {
         return typeName.startsWith("java.util.List") ||
+               typeName.startsWith("java.util.EnumSet") ||
                typeName.startsWith("java.util.Set") ||
                typeName.startsWith("java.util.Collection") ||
                typeName.startsWith("java.util.ArrayList") ||
@@ -122,6 +124,7 @@ public class TypeUtils {
 
         return typeName.startsWith("java.util.Map") ||
                typeName.startsWith("java.util.HashMap") ||
+               typeName.startsWith("java.util.EnumMap") ||
                typeName.startsWith("java.util.LinkedHashMap") ||
                typeName.startsWith("java.util.TreeMap") ||
                typeName.startsWith("java.util.ConcurrentHashMap");
@@ -140,6 +143,10 @@ public class TypeUtils {
         return !isBuiltInType(typeMirror);
     }
 
+    static boolean isEnum(TypeMirror typeMirror) {
+        return ElementKind.ENUM == toElement(typeMirror).getKind();
+    }
+
     public static String getTypeName(TypeMirror typeMirror) {
         if (typeMirror instanceof DeclaredType declaredType) {
             TypeElement typeElement = (TypeElement) declaredType.asElement();
@@ -151,5 +158,9 @@ public class TypeUtils {
     static boolean isBuiltInType(TypeMirror typeMirror) {
         String typeName = getTypeName(typeMirror);
         return BUILT_IN_TYPES.contains(typeName);
+    }
+
+    private TypeElement toElement(TypeMirror typeMirror) {
+        return (TypeElement) ((DeclaredType) typeMirror).asElement();
     }
 }

@@ -2,6 +2,7 @@ package data;
 
 import annotation.Arg;
 import annotation.ExpectedSchema;
+import data.model.EntityWithEnum;
 import data.model.Person;
 import data.model.Pet;
 import data.model.User;
@@ -211,5 +212,65 @@ public class CustomTypes {
               "additionalProperties": false
             }""")
     void userWithJsonPropertyAnnotations(User user) {
+    }
+
+    @ExpectedSchema("""
+            {
+              "type": "object",
+              "properties": {
+                "entityWithEnum": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ACTIVE",
+                        "INACTIVE",
+                        "PENDING"
+                      ]
+                    },
+                    "listOfStatuses": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "ACTIVE",
+                          "INACTIVE",
+                          "PENDING"
+                        ]
+                      }
+                    },
+                    "statusOverriddenOnField": {
+                      "type": "string",
+                      "enum": [
+                        "Active",
+                        "Inactive",
+                        "Pending"
+                      ]
+                    },
+                    "size": {
+                      "type": "string",
+                      "enum": [
+                        "L",
+                        "XXL",
+                        "XXXL"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "listOfStatuses",
+                    "statusOverriddenOnField",
+                    "size"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "entityWithEnum"
+              ],
+              "additionalProperties": false
+            }""")
+    void entityWithEnumShouldAddEnumValues(EntityWithEnum entityWithEnum) {
     }
 }

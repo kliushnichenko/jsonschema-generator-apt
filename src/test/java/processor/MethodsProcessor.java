@@ -23,6 +23,7 @@ public class MethodsProcessor extends AbstractProcessor {
 
     private Messager messager;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final MetaSchemaValidator metaSchemaValidator = new MetaSchemaValidator();
     private Map<Class<? extends Annotation>, JsonSchemaAnnotationMapper<?>> mappers = Map.of();
     private Set<String> ignoreTypes = Set.of();
 
@@ -55,6 +56,9 @@ public class MethodsProcessor extends AbstractProcessor {
             String expectedJsonSchema = method.getAnnotation(ExpectedSchema.class).value();
             String generatedJsonSchema = new JsonSchemaGenerator(mappers)
                     .generate((ExecutableElement) method, ignoreTypes);
+
+            metaSchemaValidator.validate(generatedJsonSchema, method.getSimpleName().toString(), messager);
+
             try {
                 JsonNode generatedJson = objectMapper.readTree(generatedJsonSchema);
                 generatedJsonSchema = objectMapper.setDefaultPrettyPrinter(new CanonicalPrettyPrinter())
@@ -66,10 +70,10 @@ public class MethodsProcessor extends AbstractProcessor {
                             """
                                     Generated Schema doesn't match expected Schema.
                                     Method name: %s
-                                                                        
+                                    
                                     ====== Expected:
                                     %s
-                                                                        
+                                    
                                     ====== Generated:
                                     %s
                                     """.formatted(method.getSimpleName(), expectedJsonSchema, generatedJsonSchema)

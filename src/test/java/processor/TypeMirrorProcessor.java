@@ -22,6 +22,7 @@ public class TypeMirrorProcessor extends AbstractProcessor {
 
     private Messager messager;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final MetaSchemaValidator metaSchemaValidator = new MetaSchemaValidator();
 
     public TypeMirrorProcessor() {
     }
@@ -55,6 +56,9 @@ public class TypeMirrorProcessor extends AbstractProcessor {
             }
             String generatedJsonSchema = new JsonSchemaGenerator()
                     .generate(typeMirror);
+
+            metaSchemaValidator.validate(generatedJsonSchema, method.getSimpleName().toString(), messager);
+
             try {
                 JsonNode generatedJson = objectMapper.readTree(generatedJsonSchema);
                 generatedJsonSchema = objectMapper.setDefaultPrettyPrinter(new CanonicalPrettyPrinter())
@@ -66,10 +70,10 @@ public class TypeMirrorProcessor extends AbstractProcessor {
                             """
                                     Generated Schema doesn't match expected Schema.
                                     Method name: %s
-                                                                        
+                                    
                                     ====== Expected:
                                     %s
-                                                                        
+                                    
                                     ====== Generated:
                                     %s
                                     """.formatted(method.getSimpleName(), expectedJsonSchema, generatedJsonSchema)

@@ -120,7 +120,11 @@ public class JsonSchemaGenerator {
         } else if (TypeUtils.isMapType(paramTypeMirror)) {
             properties.put(propName, buildSchemaForMap(paramTypeMirror, schemaProps));
         } else if (TypeUtils.isCustomObjectType(paramTypeMirror)) {
-            properties.put(propName, buildSchemaForCustomObject(parameter.asType(), schemaProps));
+            if (TypeUtils.isEnum(paramTypeMirror)) {
+                properties.put(propName, buildSchemaForEnum(parameter.asType(), schemaProps));
+            } else {
+                properties.put(propName, buildSchemaForCustomObject(parameter.asType(), schemaProps));
+            }
         } else {
             properties.put(propName, buildSchemaForScalarType(paramTypeMirror, schemaProps));
         }
@@ -145,18 +149,64 @@ public class JsonSchemaGenerator {
     private JsonSchemaObj buildSchemaForCustomObject(TypeMirror typeMirror, JsonSchemaProps schemaProps) {
         JsonSchemaObj objectSchema = new JsonSchemaObj();
 
-        TypeElement elem = toElement(typeMirror);
-        Schema classLevelschema = elem.getAnnotation(Schema.class);
-        if (classLevelschema != null) {
-            if (isPresent(classLevelschema.description())) {
-                objectSchema.setDescription(classLevelschema.description());
+        TypeElement typeElement = toElement(typeMirror);
+        Schema classLevelSchema = typeElement.getAnnotation(Schema.class);
+        if (classLevelSchema != null) {
+            if (isPresent(classLevelSchema.description())) {
+                objectSchema.setDescription(classLevelSchema.description());
             }
         }
 
         List<VariableElement> fields = resolveObjectFields(typeMirror);
         populateSchemaFromParams(objectSchema, fields);
         enrichSchema(schemaProps, objectSchema);
+
+        if (schemaProps.isAdditionalProperties()) {
+            // override if explicitly set via annotation
+            objectSchema.setAdditionalProperties(true);
+        }
+
+        if (schemaProps.getTypes() != null) {
+            // override type if explicitly set via annotation
+            objectSchema.setType(schemaProps.getTypes());
+        }
+
         return objectSchema;
+    }
+
+    private JsonSchemaScalar buildSchemaForEnum(TypeMirror typeMirror, JsonSchemaProps schemaProps) {
+        JsonSchemaScalar schema = new JsonSchemaScalar(JsonSchemaType.STRING);
+
+        TypeElement typeElement = toElement(typeMirror);
+        Schema classLevelSchema = typeElement.getAnnotation(Schema.class);
+        if (classLevelSchema != null) {
+            if (!isPresent(schemaProps.getDescription()) && isPresent(classLevelSchema.description())) {
+                schema.setDescription(classLevelSchema.description());
+            }
+
+            if (classLevelSchema.allowableValues().length > 0 && schemaProps.getAllowableValues() == null) {
+                // override enum values if explicitly at class-level
+                schemaProps.setAllowableValues(List.of(classLevelSchema.allowableValues()));
+            }
+        }
+
+        enrichSchema(schemaProps, schema);
+
+        List<String> enumValues = typeElement.getEnclosedElements().stream()
+                .filter(e -> e.getKind() == ElementKind.ENUM_CONSTANT)
+                .map(e -> e.getSimpleName().toString())
+                .toList();
+
+        if (schemaProps.getAllowableValues() != null) {
+            // override enum values if explicitly set via annotation
+            enumValues = schemaProps.getAllowableValues();
+        }
+
+        if (!enumValues.isEmpty()) {
+            schema.setEnumValues(enumValues);
+        }
+
+        return schema;
     }
 
     private JsonSchemaObj buildSchemaForMap(TypeMirror paramTypeMirror, JsonSchemaProps schemaProps) {
@@ -207,11 +257,15 @@ public class JsonSchemaGenerator {
                 JsonSchemaTypeInfo typeInfo = TypeMapper.toJsonSchemaTypeInfo(typeMirror);
                 return new JsonSchemaBase(typeInfo);
             } else {
-                // Custom object type
-                JsonSchemaObj objectSchema = new JsonSchemaObj();
-                List<VariableElement> fields = resolveObjectFields(typeMirror);
-                populateSchemaFromParams(objectSchema, fields);
-                return objectSchema;
+                if (TypeUtils.isEnum(typeMirror)) {
+                    return buildSchemaForEnum(typeMirror, new JsonSchemaProps());
+                } else {
+                    // Custom object type
+                    JsonSchemaObj objectSchema = new JsonSchemaObj();
+                    List<VariableElement> fields = resolveObjectFields(typeMirror);
+                    populateSchemaFromParams(objectSchema, fields);
+                    return objectSchema;
+                }
             }
         }
 

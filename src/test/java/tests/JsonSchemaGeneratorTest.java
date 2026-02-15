@@ -2,6 +2,7 @@ package tests;
 
 import annotation.Arg;
 import data.*;
+import data.model.BlackBox;
 import io.github.kliushnichenko.jsonschema.model.JsonSchemaAnnotationMapper;
 import io.github.kliushnichenko.jsonschema.model.JsonSchemaProps;
 import org.junit.jupiter.api.Test;
@@ -59,7 +60,12 @@ class JsonSchemaGeneratorTest {
     }
 
     @Test
-    void generate_NullableTypes() {
+    void verify_nullable() {
         new ProcessorRunner(NullableTypes.class, ProcessorRunner.Type.TYPE_MIRROR);
+    }
+
+    @Test
+    void verify_blackBoxTypeOptions() {
+        new ProcessorRunner(BlackBoxTypes.class, ProcessorRunner.Type.TYPE_MIRROR);
     }
 }
